@@ -19,5 +19,19 @@
 
             return sb.ToString();
         }
+
+        public static string GeneratePassword(string characters, int passLength)
+        {
+            var random = new Random();
+            var passwordBuilder = new StringBuilder();
+
+            for (int i = 0; i < passLength; i++)
+            {
+                var randomIndex = random.Next(0, characters.Length - 1);
+                passwordBuilder.Append(characters[randomIndex]);
+            }
+
+            return passwordBuilder.ToString();
+        }
     }
 }
