@@ -33,5 +33,13 @@
 
             return passwordBuilder.ToString();
         }
+
+        public static string GenerateFile(string password)
+        {
+            var fileName = "MyStrongPassword.txt";
+            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            File.WriteAllText(Path.Combine(desktopPath, fileName), password);
+            return fileName;
+        }
     }
 }
