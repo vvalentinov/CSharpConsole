@@ -1,102 +1,69 @@
-﻿using System.Text;
-using static TemperatureConverter.Converter;
+﻿using static TemperatureConverter.Converter;
 
 Console.WriteLine("Welcome to your temperature converter!");
-Console.WriteLine("What type of temperature would you like to convert?");
+Console.WriteLine("Choose your converter!");
 Console.WriteLine("Your options:");
-Console.WriteLine("C - Celsius");
-Console.WriteLine("F - Fahrenheit");
-Console.WriteLine("K - Kelvin");
+Console.WriteLine("A: Celsius -> Fahrenheit");
+Console.WriteLine("B: Celsius -> Kelvin");
+Console.WriteLine("C: Fahrenheit -> Celsius");
+Console.WriteLine("D: Fahrenheit -> Kelvin");
+Console.WriteLine("E: Kelvin -> Celsius");
+Console.WriteLine("F: Kelvin -> Fahrenheit");
+Console.WriteLine("Choose one of the options: A, B , C ...");
 Console.Write("Option: ");
 
-string fromTempType = Console.ReadLine() ?? string.Empty;
+string converterType = Console.ReadLine() ?? string.Empty;
 
-while (fromTempType != "C" && fromTempType != "K" && fromTempType != "F")
+while (
+    converterType != "A" &&
+    converterType != "B" &&
+    converterType != "C" &&
+    converterType != "D" &&
+    converterType != "E" &&
+    converterType != "F")
 {
-    Console.WriteLine("Error: You must choose either C, F or K! Try, again!");
+    Console.WriteLine("Error: You must choose one of the provided options! Try, again!");
     Console.Write("Option: ");
-    fromTempType = Console.ReadLine() ?? string.Empty;
+    converterType = Console.ReadLine() ?? string.Empty;
 }
 
-Console.Write("Enter value: ");
+Console.Write("Enter temperature value: ");
 
-string inputValue = Console.ReadLine() ?? string.Empty;
+string tempValueInput = Console.ReadLine() ?? string.Empty;
 
-bool isNumber = int.TryParse(inputValue, out int fromValue);
+bool isNumber = double.TryParse(tempValueInput, out double tempValue);
 
 while (!isNumber)
 {
     Console.WriteLine("Error: The input is not correct! Try, again!");
     Console.Write("Enter value: ");
-    inputValue = Console.ReadLine() ?? string.Empty;
-    isNumber = int.TryParse(inputValue, out fromValue);
-}
-
-StringBuilder toTempOptions = new StringBuilder();
-
-var toTempOptionsList = new List<string>();
-
-switch (fromTempType)
-{
-    case "C":
-        toTempOptions.AppendLine("F - Farenheit");
-        toTempOptions.Append("K - Kelvin");
-        toTempOptionsList.Add("F");
-        toTempOptionsList.Add("K");
-        break;
-    case "F":
-        toTempOptions.AppendLine("C - Celsius");
-        toTempOptions.Append("K - Kelvin");
-        toTempOptionsList.Add("C");
-        toTempOptionsList.Add("K");
-        break;
-    case "K":
-        toTempOptions.AppendLine("C - Celsius");
-        toTempOptions.Append("F - Farenheit");
-        toTempOptionsList.Add("C");
-        toTempOptionsList.Add("F");
-        break;
-}
-
-Console.WriteLine("To what type of temperature would you like to convert your choice?");
-Console.WriteLine("Your options:");
-Console.WriteLine(toTempOptions);
-Console.Write("Option: ");
-
-string toTempType = Console.ReadLine() ?? string.Empty;
-
-while (!toTempOptionsList.Contains(toTempType))
-{
-    Console.WriteLine($"Error: Invalid choice for temperature! Valid choices: {string.Join(", ", toTempOptionsList)}! Try, again!");
-    Console.Write("Option: ");
-    toTempType = Console.ReadLine() ?? string.Empty;
+    tempValueInput = Console.ReadLine() ?? string.Empty;
+    isNumber = double.TryParse(tempValueInput, out tempValue);
 }
 
 double result = 0;
 
-if (fromTempType == "C" && toTempType == "F")
+switch (converterType)
 {
-    result = CelsiusToFahrenheit(fromValue);
-}
-else if (fromTempType == "C" && toTempType == "K")
-{
-    result = CelsiusToKelvin(fromValue);
-}
-else if (fromTempType == "F" && toTempType == "C")
-{
-    result = FahrenheitToCelsius(fromValue);
-}
-else if (fromTempType == "F" && toTempType == "K")
-{
-    result = FahrenheitToKelvin(fromValue);
-}
-else if (fromTempType == "K" && toTempType == "C")
-{
-    result = KelvinToCelsius(fromValue);
-}
-else if (fromTempType == "K" && toTempType == "F")
-{
-    result = KelvinToFahrenheit(fromValue);
+    case "A":
+        result = CelsiusToFahrenheit(tempValue);
+        break;
+    case "B":
+        result = CelsiusToKelvin(tempValue);
+        break;
+    case "C":
+        result = FahrenheitToCelsius(tempValue);
+        break;
+    case "D":
+        result = FahrenheitToKelvin(tempValue);
+        break;
+    case "E":
+        result = KelvinToCelsius(tempValue);
+        break;
+    case "F":
+        result = KelvinToFahrenheit(tempValue);
+        break;
 }
 
+Console.WriteLine(new string('-', 100));
 Console.WriteLine($"Result: {result}");
