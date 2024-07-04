@@ -2,10 +2,10 @@
 {
     public static class CharacterPool
     {
-        private static string _numbers = "0123456789";
-        private static string _uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        private static string _special = "!#$%^&*()-_+=:;\"?/<>.{}[]@`~";
-        private static string _all = string.Concat(
+        private readonly static string _numbers = "0123456789";
+        private readonly static string _uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private readonly static string _special = "!#$%^&*()-_+=:;\"?/<>.{}[]@`~";
+        private readonly static string _all = string.Concat(
             _uppercase,
             _uppercase.ToLower(),
             _numbers,
