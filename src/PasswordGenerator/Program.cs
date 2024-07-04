@@ -1,19 +1,41 @@
 ﻿using static PasswordGenerator.Validator;
 using static PasswordGenerator.Generator;
 using static PasswordGenerator.ConsolePrinter;
-using static PasswordGenerator.CharactersList;
+using static PasswordGenerator.CharacterPool;
 
 PrintChooseLengthMessage();
 
-int passLength = ValidateLength(Console.ReadLine() ?? string.Empty);
+string length = Console.ReadLine() ?? string.Empty;
+
+(bool isLengthValid, string validateLengthMsg) = ValidateLength(length);
+
+while (!isLengthValid)
+{
+    Console.WriteLine(validateLengthMsg);
+    Console.Write("Length: ");
+    length = Console.ReadLine() ?? string.Empty;
+    (isLengthValid, validateLengthMsg) = ValidateLength(length);
+}
+
+byte passLength = byte.Parse(length);
 
 PrintCharacterOptions(Characters);
 
 PrintChooseOptionsMessage();
 
-string inputCharactersOptions = ValidateInputOptions(Console.ReadLine() ?? string.Empty);
+var inputOptions = Console.ReadLine() ?? string.Empty;
 
-string characters = GenerateCharacters(inputCharactersOptions, Characters);
+(bool isInputOptionsValid, string validateOptionsMsg) = ValidateInputOptions(inputOptions);
+
+while (!isInputOptionsValid)
+{
+    Console.WriteLine(validateOptionsMsg);
+    PrintChooseOptionsMessage();
+    inputOptions = Console.ReadLine() ?? string.Empty;
+    (isInputOptionsValid, validateOptionsMsg) = ValidateInputOptions(inputOptions);
+}
+
+string characters = GenerateCharacters(inputOptions, Characters);
 
 string password = GeneratePassword(characters, passLength);
 

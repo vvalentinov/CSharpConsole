@@ -1,15 +1,15 @@
 ﻿namespace PasswordGenerator
 {
-    public static class CharactersList
+    public static class CharacterPool
     {
         private static string _numbers = "0123456789";
         private static string _uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        private static string _specialCharacters = "!#$%^&*()-_+=:;\"?/<>.{}[]@`~";
+        private static string _special = "!#$%^&*()-_+=:;\"?/<>.{}[]@`~";
         private static string _all = string.Concat(
             _uppercase,
             _uppercase.ToLower(),
             _numbers,
-            _specialCharacters);
+            _special);
 
         public static IDictionary<char, string> Characters
         {
@@ -20,7 +20,7 @@
                     ['U'] = _uppercase,
                     ['L'] = _uppercase.ToLower(),
                     ['N'] = _numbers,
-                    ['S'] = _specialCharacters,
+                    ['S'] = _special,
                     ['A'] = _all
                 };
             }

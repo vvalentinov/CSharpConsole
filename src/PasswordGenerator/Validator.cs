@@ -1,46 +1,40 @@
 ﻿namespace PasswordGenerator
 {
+    using System.Numerics;
     using System.Text.RegularExpressions;
-    using static PasswordGenerator.ConsolePrinter;
 
     public static class Validator
     {
-        public static int ValidateLength(string input)
+        public static (bool isLengthValid, string validateLengthMsg) ValidateLength(string input)
         {
-            bool isNumber = int.TryParse(input, out int length);
-
-            while (!isNumber || length < 5 || length > 100)
+            if (!BigInteger.TryParse(input, out BigInteger number))
             {
-                Console.WriteLine("Error! Try, again!");
-
-                PrintChooseLengthMessage();
-
-                isNumber = int.TryParse(Console.ReadLine(), out length);
+                return (false, "Error: The input is not a valid number!");
             }
 
-            return length;
+            if (number > long.MaxValue)
+            {
+                return (false, "Error: The number is too big!");
+            }
+
+            if (number < 5 || number > 100)
+            {
+                return (false, "Error: The character count must be between 5 and 100!");
+            }
+
+            return (true, "Valid");
         }
 
-        public static string ValidateInputOptions(string inputOptions)
+        public static (bool isInputOptionsValid, string validateInputOptionsMsg) ValidateInputOptions(string inputOptions)
         {
-            var regex = new Regex("^(U|L|N|S)( (U|L|N|S)){0,2}$");
+            var regex = new Regex("^(U|L|N|S)( (U|L|N|S)){0,3}$|^(U|L|N|S) (U|L|N|S) (U|L|N|S) (U|L|N|S)$");
 
-            while (!regex.IsMatch(inputOptions))
+            if (!regex.IsMatch(inputOptions))
             {
-                if (string.IsNullOrWhiteSpace(inputOptions))
-                {
-                    inputOptions = "A";
-                    break;
-                }
-
-                Console.WriteLine("Error: The input characters options were not in correct format!");
-
-                PrintChooseOptionsMessage();
-
-                inputOptions = Console.ReadLine() ?? string.Empty;
+                return (false, "Error: The input characters options were not in correct format!");
             }
 
-            return inputOptions;
+            return (true, "Valid");
         }
     }
 }
