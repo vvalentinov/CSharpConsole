@@ -3,6 +3,7 @@ using static PasswordGenerator.Generator;
 using static PasswordGenerator.ConsolePrinter;
 using static PasswordGenerator.CharacterPool;
 
+Console.WriteLine("Welcome to your password generator!");
 PrintChooseLengthMessage();
 
 string length = Console.ReadLine() ?? string.Empty;
@@ -23,23 +24,32 @@ PrintCharacterOptions(Characters);
 
 PrintChooseOptionsMessage();
 
-var inputOptions = Console.ReadLine() ?? string.Empty;
+string inputOptions = Console.ReadLine() ?? string.Empty;
 
-(bool isInputOptionsValid, string validateOptionsMsg) = ValidateInputOptions(inputOptions);
+string password;
 
-while (!isInputOptionsValid)
+if (string.IsNullOrWhiteSpace(inputOptions))
 {
-    Console.WriteLine(validateOptionsMsg);
-    PrintChooseOptionsMessage();
-    inputOptions = Console.ReadLine() ?? string.Empty;
-    (isInputOptionsValid, validateOptionsMsg) = ValidateInputOptions(inputOptions);
+    password = GeneratePassword(Characters['A'], passLength);
+}
+else
+{
+    (bool isInputOptionsValid, string validateOptionsMsg) = ValidateInputOptions(inputOptions);
+
+    while (!isInputOptionsValid)
+    {
+        Console.WriteLine(validateOptionsMsg);
+        PrintChooseOptionsMessage();
+        inputOptions = Console.ReadLine() ?? string.Empty;
+        (isInputOptionsValid, validateOptionsMsg) = ValidateInputOptions(inputOptions);
+    }
+
+    string characters = GenerateCharacters(inputOptions, Characters);
+
+    password = GeneratePassword(characters, passLength);
 }
 
-string characters = GenerateCharacters(inputOptions, Characters);
-
-string password = GeneratePassword(characters, passLength);
-
-Console.WriteLine(new string('=', 100));
+Console.WriteLine(new string('-', 100));
 Console.WriteLine($"Your password: {password}");
 
 var fileName = GenerateFile(password);

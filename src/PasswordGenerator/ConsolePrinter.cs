@@ -13,7 +13,7 @@
 
         public static void PrintChooseLengthMessage()
         {
-            Console.WriteLine("Choose length between 5 and 100 characters:");
+            Console.WriteLine("Choose length between 5 and 100 characters!");
             Console.Write("Length: ");
         }
 
