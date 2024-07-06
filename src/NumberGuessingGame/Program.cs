@@ -6,48 +6,66 @@ Console.WriteLine("(Optional): You can choose lower and upper bound! (default: 0
 
 Console.Write("Lower bound: ");
 
-string lowerBoundInput = Console.ReadLine() ?? string.Empty;
-
 int lowerBound = 0;
 
-if (!string.IsNullOrWhiteSpace(lowerBoundInput))
+var lowerBoundKeyInfo = Console.ReadKey(true);
+
+if (lowerBoundKeyInfo.Key == ConsoleKey.Enter)
 {
-    (bool isLowerBoundValid, string isLowerBoundValidMsg) = ValidateLowerBound(lowerBoundInput);
+    Console.WriteLine("0");
+}
+else
+{
+    string lowerBoundInput = Console.ReadLine() ?? string.Empty;
 
-    while (!isLowerBoundValid)
+    if (!string.IsNullOrWhiteSpace(lowerBoundInput))
     {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine(isLowerBoundValidMsg);
-        Console.ResetColor();
-        Console.Write("Lower bound: ");
-        lowerBoundInput = Console.ReadLine() ?? string.Empty;
-        (isLowerBoundValid, isLowerBoundValidMsg) = ValidateLowerBound(lowerBoundInput);
-    }
+        (bool isLowerBoundValid, string isLowerBoundValidMsg) = ValidateLowerBound(lowerBoundInput);
 
-    lowerBound = int.Parse(lowerBoundInput);
+        while (!isLowerBoundValid)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(isLowerBoundValidMsg);
+            Console.ResetColor();
+            Console.Write("Lower bound: ");
+            lowerBoundInput = Console.ReadLine() ?? string.Empty;
+            (isLowerBoundValid, isLowerBoundValidMsg) = ValidateLowerBound(lowerBoundInput);
+        }
+
+        lowerBound = int.Parse(lowerBoundInput);
+    }
 }
 
 Console.Write("Upper bound: ");
 
-string upperBoundInput = Console.ReadLine() ?? string.Empty;
-
 int upperBound = 100_000;
 
-if (!string.IsNullOrWhiteSpace(upperBoundInput))
+var upperBoundKeyInfo = Console.ReadKey(true);
+
+if (upperBoundKeyInfo.Key == ConsoleKey.Enter)
 {
-    (bool isUpperBoundValid, string isUpperBoundValidMsg) = ValidateUpperBound(upperBoundInput, lowerBound);
+    Console.WriteLine("100000");
+}
+else
+{
+    string upperBoundInput = Console.ReadLine() ?? string.Empty;
 
-    while (!isUpperBoundValid)
+    if (!string.IsNullOrWhiteSpace(upperBoundInput))
     {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine(isUpperBoundValidMsg);
-        Console.ResetColor();
-        Console.Write("Upper bound: ");
-        upperBoundInput = Console.ReadLine() ?? string.Empty;
-        (isUpperBoundValid, isUpperBoundValidMsg) = ValidateUpperBound(upperBoundInput, lowerBound);
-    }
+        (bool isUpperBoundValid, string isUpperBoundValidMsg) = ValidateUpperBound(upperBoundInput, lowerBound);
 
-    upperBound = int.Parse(upperBoundInput);
+        while (!isUpperBoundValid)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(isUpperBoundValidMsg);
+            Console.ResetColor();
+            Console.Write("Upper bound: ");
+            upperBoundInput = Console.ReadLine() ?? string.Empty;
+            (isUpperBoundValid, isUpperBoundValidMsg) = ValidateUpperBound(upperBoundInput, lowerBound);
+        }
+
+        upperBound = int.Parse(upperBoundInput);
+    }
 }
 
 int randomNumber = RandomNumberGenerator.GetInt32(lowerBound, upperBound + 1);
