@@ -94,6 +94,42 @@
             }
         }
 
+        public static async Task DeleteRecordAsync()
+        {
+            string connectionString = GetDbConnectionString();
+
+            Console.WriteLine("Please, type the id of the record you want to delete!");
+
+            bool isIdValid = int.TryParse(Console.ReadLine(), out int recordId);
+
+            while (!isIdValid)
+            {
+                Console.WriteLine("The id of the record must be a valid number! Try, again!");
+                isIdValid = int.TryParse(Console.ReadLine(), out recordId);
+            }
+
+            using var connection = new SqliteConnection(connectionString);
+
+            await connection.OpenAsync();
+
+            string deleteRecordWithIdQuery = "DELETE FROM DrinkingHabit WHERE Id = @RecordID";
+            using var deleteRecordWithIdCommand = new SqliteCommand(deleteRecordWithIdQuery, connection);
+            deleteRecordWithIdCommand.Parameters.AddWithValue("@RecordID", recordId);
+
+            int rowsAffected = await deleteRecordWithIdCommand.ExecuteNonQueryAsync();
+
+            if (rowsAffected > 0)
+            {
+                Console.WriteLine("Record deleted successfully.");
+            }
+            else
+            {
+                Console.WriteLine("No record found with the given ID.");
+            }
+
+            await connection.CloseAsync();
+        }
+
         private static decimal GetLitresInput()
         {
             Console.WriteLine("Insert litres quantity.");
