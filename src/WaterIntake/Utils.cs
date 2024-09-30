@@ -130,6 +130,48 @@
             await connection.CloseAsync();
         }
 
+        public static async Task UpdateRecordAsync()
+        {
+            string connectionString = GetDbConnectionString();
+
+            Console.WriteLine("Please, type the id of the record you want to update!");
+
+            bool isIdValid = int.TryParse(Console.ReadLine(), out int recordId);
+
+            while (!isIdValid)
+            {
+                Console.WriteLine("The id of the record must be a valid number! Try, again!");
+                isIdValid = int.TryParse(Console.ReadLine(), out recordId);
+            }
+
+            var date = GetDateInput();
+            var litres = GetLitresInput();
+
+            string query = "UPDATE DrinkingHabit SET Date=@Date, Litres=@Litres WHERE Id=@RecordID";
+
+            using var connection = new SqliteConnection(connectionString);
+
+            await connection.OpenAsync();
+
+            using var updateRecordCommand = new SqliteCommand(query, connection);
+            updateRecordCommand.Parameters.AddWithValue("@Date", date);
+            updateRecordCommand.Parameters.AddWithValue("@Litres", litres);
+            updateRecordCommand.Parameters.AddWithValue("@RecordID", recordId);
+
+            var rowsAffected = await updateRecordCommand.ExecuteNonQueryAsync();
+
+            if (rowsAffected > 0)
+            {
+                Console.WriteLine("Record updated successfully.");
+            }
+            else
+            {
+                Console.WriteLine("No record found with the given ID.");
+            }
+
+            await connection.CloseAsync();
+        }
+
         private static decimal GetLitresInput()
         {
             Console.WriteLine("Insert litres quantity.");
