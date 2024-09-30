@@ -58,6 +58,42 @@
             await connection.CloseAsync();
         }
 
+        public static async Task GetAllRecordsAsync()
+        {
+            string connectionString = GetDbConnectionString();
+
+            string query = "SELECT * FROM DrinkingHabit";
+
+            using var connection = new SqliteConnection(connectionString);
+
+            await connection.OpenAsync();
+
+            using var command = new SqliteCommand(query, connection);
+
+            using var reader = await command.ExecuteReaderAsync();
+
+            if (reader.HasRows)
+            {
+                while (await reader.ReadAsync())
+                {
+                    int id = reader.GetInt32(0);
+
+                    DateTime date = DateTime.ParseExact(
+                        reader.GetString(1),
+                        "dd-MM-yy",
+                        new CultureInfo("en-US"));
+
+                    decimal litres = reader.GetDecimal(2);
+
+                    Console.WriteLine($"Id: {id}, Date: {date.ToString("dd-MMM-yyyy")}, Litres: {litres}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No records found!");
+            }
+        }
+
         private static decimal GetLitresInput()
         {
             Console.WriteLine("Insert litres quantity.");
