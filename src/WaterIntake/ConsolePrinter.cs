@@ -99,6 +99,16 @@
             Console.ForegroundColor = originalColor;
         }
 
+        public static void PrintRecordUpdateSuccessMessage()
+        {
+            var originalColor = Console.ForegroundColor;
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Success: Updated record!{Environment.NewLine}");
+
+            Console.ForegroundColor = originalColor;
+        }
+
         public static void PrintDeleteRecordSuccess()
         {
             var originalColor = Console.ForegroundColor;
