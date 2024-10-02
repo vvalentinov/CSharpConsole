@@ -2,6 +2,8 @@
 {
     public static class DbConstants
     {
+        public const string DbName = "WaterIntake";
+
         public const string TableName = "DrinkingHabit";
 
         public const string TableDateColumnFormat = "yyyy-MM-dd";

@@ -2,6 +2,7 @@
 {
     using System.Globalization;
 
+    using static WaterIntake.DbConstants;
     using static WaterIntake.ConsolePrinter;
 
     public static class ConsoleReader
@@ -59,8 +60,8 @@
         public static string GetDateInput(bool isForUpdate = false)
         {
             string message = isForUpdate ?
-                "Please insert the date: (Format: dd.MM.yyyy). (Type Enter to remain unchanged!)" :
-                "Please insert the date: (Format: dd.MM.yyyy). Type 0 to abort and return to Menu!";
+                "Insert the date: (Format: dd.MM.yyyy). (Type Enter to remain unchanged!)" :
+                "Insert the date: (Format: dd.MM.yyyy). Type 0 to abort and return to Main Menu!";
 
             Console.WriteLine(message);
             PrintDateInputMessage();
@@ -111,7 +112,7 @@
                     out date);
             }
 
-            return date.ToString("yyyy-MM-dd");
+            return date.ToString(TableDateColumnFormat);
         }
     }
 }
