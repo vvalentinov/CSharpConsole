@@ -9,7 +9,7 @@
 
     public static class WaterIntakeDataAccess
     {
-        private const string DbConnectionString = $"Data Source=WaterIntake.db";
+        private const string DbConnectionString = $"Data Source={DbName}.db";
 
         public static async Task CreateWaterIntakeTableAsync()
         {
@@ -61,7 +61,9 @@
 
             await connection.OpenAsync();
 
-            using var command = new SqliteCommand(GetAllRecordsQuery, connection);
+            using var command = new SqliteCommand(
+                GetAllRecordsQuery,
+                connection);
 
             using var reader = await command.ExecuteReaderAsync();
 
@@ -76,7 +78,7 @@
                         Id = reader.GetInt32(0),
                         Date = DateTime.ParseExact(
                             reader.GetString(1),
-                            "yyyy-MM-dd",
+                            TableDateColumnFormat,
                             CultureInfo.InvariantCulture),
                         Litres = reader.GetDecimal(2),
                     };
@@ -90,20 +92,22 @@
             {
                 PrintNoRecordsFoundMessage();
             }
+
+            await connection.CloseAsync();
         }
 
         public static async Task DeleteRecordAsync()
         {
-            Console.WriteLine("Type the id of the record you want to delete!");
+            Console.WriteLine("Type the id of the record you want to delete.");
             PrintRecordIdInput();
 
-            bool isIdValid = int.TryParse(Console.ReadLine(), out int recordId);
+            bool isIdValidNumber = int.TryParse(Console.ReadLine(), out int recordId);
 
-            while (!isIdValid)
+            while (!isIdValidNumber)
             {
                 PrintInvalidRecordIdError();
                 PrintRecordIdInput();
-                isIdValid = int.TryParse(Console.ReadLine(), out recordId);
+                isIdValidNumber = int.TryParse(Console.ReadLine(), out recordId);
             }
 
             using var connection = new SqliteConnection(DbConnectionString);
@@ -132,13 +136,16 @@
 
         public static async Task UpdateRecordAsync()
         {
-            Console.WriteLine("Type the id of the record you want to update!");
+            Console.WriteLine("Type the id of the record you want to update.");
+            PrintRecordIdInput();
 
             bool isIdValid = int.TryParse(Console.ReadLine(), out int recordId);
 
             while (!isIdValid)
             {
-                Console.WriteLine("The id of the record must be a valid number! Try, again!");
+                Console.WriteLine();
+                PrintInvalidRecordIdError();
+                PrintRecordIdInput();
                 isIdValid = int.TryParse(Console.ReadLine(), out recordId);
             }
 
@@ -179,11 +186,13 @@
 
             if (rowsAffected > 0)
             {
-                Console.WriteLine("Record updated successfully.");
+                Console.WriteLine();
+                PrintRecordUpdateSuccessMessage();
             }
             else
             {
-                Console.WriteLine("No record found with the given ID.");
+                Console.WriteLine();
+                PrintNoRecordFoundError();
             }
 
             await connection.CloseAsync();
