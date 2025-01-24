@@ -1,57 +1,37 @@
-﻿using static PasswordGenerator.Validator;
-using static PasswordGenerator.Generator;
-using static PasswordGenerator.ConsolePrinter;
+﻿using static PasswordGenerator.Generator;
+using static PasswordGenerator.ConsoleReader;
 using static PasswordGenerator.CharacterPool;
+using static PasswordGenerator.ConsolePrinter;
 
-Console.WriteLine("Welcome to your password generator!");
-PrintChooseLengthMessage();
+Console.WriteLine("Welcome To Your Password Generator!");
 
-string length = Console.ReadLine() ?? string.Empty;
+byte passLength = GetPasswordLength();
 
-(bool isLengthValid, string validateLengthMsg) = ValidateLength(length);
+string characterPool = string.Empty;
 
-while (!isLengthValid)
+while (characterPool == string.Empty)
 {
-    Console.WriteLine(validateLengthMsg);
-    Console.Write("Length: ");
-    length = Console.ReadLine() ?? string.Empty;
-    (isLengthValid, validateLengthMsg) = ValidateLength(length);
-}
+    PrintChooseCharactersMessage("numbers", Numbers);
+    characterPool += GetUserYesOrNoChoice() == "yes" ? Numbers : string.Empty;
 
-byte passLength = byte.Parse(length);
+    PrintChooseCharactersMessage("uppercase", UpperCase);
+    characterPool += GetUserYesOrNoChoice() == "yes" ? UpperCase : string.Empty;
 
-PrintCharacterOptions(Characters);
+    PrintChooseCharactersMessage("lowercase", LowerCase);
+    characterPool += GetUserYesOrNoChoice() == "yes" ? LowerCase : string.Empty;
 
-PrintChooseOptionsMessage();
+    PrintChooseCharactersMessage("special", Special);
+    characterPool += GetUserYesOrNoChoice() == "yes" ? Special : string.Empty;
 
-string inputOptions = Console.ReadLine() ?? string.Empty;
-
-string password;
-
-if (string.IsNullOrWhiteSpace(inputOptions))
-{
-    password = GeneratePassword(Characters['A'], passLength);
-}
-else
-{
-    (bool isInputOptionsValid, string validateOptionsMsg) = ValidateInputOptions(inputOptions);
-
-    while (!isInputOptionsValid)
+    if (characterPool == string.Empty)
     {
-        Console.WriteLine(validateOptionsMsg);
-        PrintChooseOptionsMessage();
-        inputOptions = Console.ReadLine() ?? string.Empty;
-        (isInputOptionsValid, validateOptionsMsg) = ValidateInputOptions(inputOptions);
+        PrintErrorMessage("Oops! Look's like you didn't pick an option. Let's do this again.");
     }
-
-    string characters = GenerateCharacters(inputOptions, Characters);
-
-    password = GeneratePassword(characters, passLength);
 }
 
+string password = GeneratePassword(characterPool, passLength);
 Console.WriteLine(new string('-', 100));
 Console.WriteLine($"Your password: {password}");
 
 var fileName = GenerateFile(password);
-
 Console.WriteLine($"A file with name: {fileName} was created on Desktop!");
