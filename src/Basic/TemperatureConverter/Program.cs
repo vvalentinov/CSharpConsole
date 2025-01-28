@@ -1,69 +1,60 @@
 ﻿using static TemperatureConverter.Converter;
+using static TemperatureConverter.ConsolePrinter;
+
+string[] validConverterTypes = ["a", "b", "c", "d", "e", "f"];
 
 Console.WriteLine("Welcome to your temperature converter!");
 Console.WriteLine("Choose your converter!");
-Console.WriteLine("Your options:");
-Console.WriteLine("A: Celsius -> Fahrenheit");
-Console.WriteLine("B: Celsius -> Kelvin");
-Console.WriteLine("C: Fahrenheit -> Celsius");
-Console.WriteLine("D: Fahrenheit -> Kelvin");
-Console.WriteLine("E: Kelvin -> Celsius");
-Console.WriteLine("F: Kelvin -> Fahrenheit");
-Console.WriteLine("Choose one of the options: A, B , C ...");
+PrintNewLine();
+PrintConverterOptions();
+Console.WriteLine("Type one of the options: A, B , C ...");
 Console.Write("Option: ");
 
-string converterType = Console.ReadLine() ?? string.Empty;
+string converterType = Console.ReadLine()?.ToLower() ?? string.Empty;
 
-while (
-    converterType != "A" &&
-    converterType != "B" &&
-    converterType != "C" &&
-    converterType != "D" &&
-    converterType != "E" &&
-    converterType != "F")
+while (validConverterTypes.Contains(converterType) == false)
 {
-    Console.WriteLine("Error: You must choose one of the provided options! Try, again!");
+    PrintError("You must choose one of the provided options! Try, again!");
+    PrintNewLine();
+    PrintConverterOptions();
     Console.Write("Option: ");
-    converterType = Console.ReadLine() ?? string.Empty;
+    converterType = Console.ReadLine()?.ToLower() ?? string.Empty;
 }
 
+PrintNewLine();
 Console.Write("Enter temperature value: ");
 
 string tempValueInput = Console.ReadLine() ?? string.Empty;
 
-bool isNumber = double.TryParse(tempValueInput, out double tempValue);
-
-while (!isNumber)
+bool isValid = double.TryParse(tempValueInput, out double tempValue);
+while (isValid == false)
 {
-    Console.WriteLine("Error: The input is not correct! Try, again!");
+    PrintError("The input is not correct! Try, again!");
     Console.Write("Enter value: ");
     tempValueInput = Console.ReadLine() ?? string.Empty;
-    isNumber = double.TryParse(tempValueInput, out tempValue);
-}
-
-double result = 0;
-
-switch (converterType)
-{
-    case "A":
-        result = CelsiusToFahrenheit(tempValue);
-        break;
-    case "B":
-        result = CelsiusToKelvin(tempValue);
-        break;
-    case "C":
-        result = FahrenheitToCelsius(tempValue);
-        break;
-    case "D":
-        result = FahrenheitToKelvin(tempValue);
-        break;
-    case "E":
-        result = KelvinToCelsius(tempValue);
-        break;
-    case "F":
-        result = KelvinToFahrenheit(tempValue);
-        break;
+    isValid = double.TryParse(tempValueInput, out tempValue);
 }
 
 Console.WriteLine(new string('-', 100));
-Console.WriteLine($"Result: {result}");
+
+switch (converterType)
+{
+    case "a":
+        Console.WriteLine($"Result: {CelsiusToFahrenheit(tempValue)}");
+        break;
+    case "b":
+        Console.WriteLine($"Result: {CelsiusToKelvin(tempValue)}");
+        break;
+    case "c":
+        Console.WriteLine($"Result: {FahrenheitToCelsius(tempValue)}");
+        break;
+    case "d":
+        Console.WriteLine($"Result: {FahrenheitToKelvin(tempValue)}");
+        break;
+    case "e":
+        Console.WriteLine($"Result: {KelvinToCelsius(tempValue)}");
+        break;
+    case "f":
+        Console.WriteLine($"Result: {KelvinToFahrenheit(tempValue)}");
+        break;
+}

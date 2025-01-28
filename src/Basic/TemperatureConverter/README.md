@@ -1,20 +1,21 @@
-# Temperature Converter
+# 🌡️ Temperature Converter
 
-The Temperature Converter is a simple C# console application that allows users to convert temperatures between Celsius, Fahrenheit, and Kelvin. The program prompts the user to select a conversion type, enter a temperature value, and then displays the converted result.
+Welcome to the **Temperature Converter Console Application**! This beginner-friendly C# project allows users to convert temperature values between Celsius, Fahrenheit, and Kelvin using a simple and interactive console interface.
 
-## Features
+## 📚 Features
 
-- Provides user-friendly prompts and error messages.
-- Converts temperatures between Celsius, Fahrenheit, and Kelvin.
-- Ensures valid input for both the conversion type and the temperature value.
-
-## Temperature Conversion Methods
-
-The following conversion methods are available:
-
-1. Celsius to Fahrenheit: F = (C × 1.8) + 32
-2. Celsius to Kelvin: K = C + 273.15
-3. Fahrenheit to Celsius: C = (F - 32) × (5 / 9)
-4. Fahrenheit to Kelvin: K = (F - 32) × (5 / 9) + 273.15
-5. Kelvin to Celsius: C = K - 273.15
-6. Kelvin to Fahrenheit: F = (K - 273.15) × 1.8 + 32
+1. **Conversion Options**:
+    - Celsius to Fahrenheit
+    - Celsius to Kelvin
+    - Fahrenheit to Celsius
+    - Fahrenheit to Kelvin
+    - Kelvin to Celsius
+    - Kelvin to Fahrenheit
+2. **Validation**:
+    - Ensures the user inputs valid options for the converter type.
+    - Validates that the temperature input is a valid numerical value.
+3. **Dynamic Console Output**
+    - Custom error messages for invalid inputs.
+    - Clear prompts and instructions for user interaction.
+4. **Separation of Concerns**
+    - The project is divided into distinct static classes (```Converter``` and ```ConsolePrinter```) to improve code organization and reusability.
