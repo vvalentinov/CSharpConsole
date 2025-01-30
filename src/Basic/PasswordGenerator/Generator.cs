@@ -9,7 +9,7 @@
         {
             var passwordBuilder = new StringBuilder();
 
-            using (var generator = RandomNumberGenerator.Create())
+            using (RandomNumberGenerator generator = RandomNumberGenerator.Create())
             {
                 for (byte i = 0; i < passLength; i++)
                 {
@@ -24,12 +24,11 @@
             return passwordBuilder.ToString();
         }
 
-        public static string GenerateFile(string password)
+        public static void GenerateFileToDesktop(string content, string fileName)
         {
-            var fileName = "MyStrongPassword.txt";
             string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            File.WriteAllText(Path.Combine(desktopPath, fileName), password);
-            return fileName;
+            string filePath = Path.Combine(desktopPath, fileName);
+            File.WriteAllText(filePath, content);
         }
     }
 }
