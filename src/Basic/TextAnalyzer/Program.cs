@@ -1,18 +1,32 @@
-﻿using static TextAnalyzer.Errors;
-using static TextAnalyzer.Printer;
-using static TextAnalyzer.Analyzer;
+﻿using TextAnalyzer;
 
-PrintWelcomeMessage();
+ConsolePrinter.PrintWelcomeMessage();
 
-PrintTextInput();
+string filePath = ConsoleReader.GetFilePath();
 
-string? text = Console.ReadLine();
+(bool isFilePathValid, string errMessage) = Validator.IsFilePathValid(filePath, ".txt");
 
-while (string.IsNullOrWhiteSpace(text))
+while (isFilePathValid == false)
 {
-    DisplayError(EmptyTextError);
-    PrintTextInput();
-    text = Console.ReadLine();
+    ConsolePrinter.PrintError(errMessage);
+    ConsolePrinter.PrintNewLine();
+    filePath = ConsoleReader.GetFilePath();
+    (isFilePathValid, errMessage) = Validator.IsFilePathValid(filePath, ".txt");
 }
 
-AnalyzeText(text);
+string text = File.ReadAllText(filePath);
+
+int charactersCountWithSpaces = Analyzer.GetCharactersCountWithSpaces(text);
+int charactersCountWithoutSpaces = Analyzer.GetCharactersCountWithoutSpaces(text);
+int wordsCount = Analyzer.GetWordsCount(text);
+string[] longestWords = Analyzer.GetLongestWords(text);
+string[] smallestWords = Analyzer.GetSmallestWords(text);
+var wordsOccurences = Analyzer.GetWordsOccurences(text);
+
+ConsolePrinter.PrintDashedLine();
+
+ConsolePrinter.PrintCharactersCount(charactersCountWithSpaces, charactersCountWithoutSpaces);
+ConsolePrinter.PrintNumberOfWords(wordsCount);
+ConsolePrinter.PrintLongestWords(longestWords);
+ConsolePrinter.PrintSmallestWords(smallestWords);
+ConsolePrinter.PrintWordsOccurrences(wordsOccurences);

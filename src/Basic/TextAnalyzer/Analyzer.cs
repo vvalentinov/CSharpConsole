@@ -1,69 +1,68 @@
 ﻿namespace TextAnalyzer
 {
     using System.Linq;
-    using static TextAnalyzer.Errors;
-    using static TextAnalyzer.Printer;
-    using System.Text.RegularExpressions;
 
     public static class Analyzer
     {
-        public static void AnalyzeText(string text)
+        public static int GetCharactersCountWithSpaces(string text) => text.Length;
+
+        public static int GetCharactersCountWithoutSpaces(string text)
         {
-            var noSpacesRegex = new Regex(@"\S");
-            var wordsRegex = new Regex(@"\b(?:[a-zA-Z]{2,}|[AaI])\b");
+            string textWithoutSpaces = new(text.Where(c => !char.IsWhiteSpace(c)).Select(c => c).ToArray());
+            return textWithoutSpaces.Length;
+        }
 
-            var wordsMatches = wordsRegex.Matches(text);
-            var noSpacesMatches = noSpacesRegex.Matches(text);
+        public static int GetWordsCount(string text)
+        {
+            string[] words = GetWords(text);
+            return words.Length;
+        }
 
-            PrintLine();
+        public static string[] GetLongestWords(string text)
+        {
+            string[] words = GetWords(text);
+            int maxLength = words.Max(word => word.Length);
+            return words
+                .Where(word => word.Length == maxLength)
+                .Select(word => word.ToLower())
+                .Distinct()
+                .ToArray();
+        }
 
-            PrintCharactersCount(text.Length, noSpacesMatches.Count);
+        public static string[] GetSmallestWords(string text)
+        {
+            string[] words = GetWords(text);
+            int minLength = words.Min(word => word.Length);
+            return words
+                .Where(word => word.Length == minLength)
+                .Select(word => word.ToLower())
+                .Distinct()
+                .ToArray();
+        }
 
-            int wordsCount = wordsMatches.Count;
-            if (wordsCount > 0)
+        public static string[] GetWords(string text) => text.Split([' ', '\t', '\n', '\r', '.', ',', ';', '!', '?'], StringSplitOptions.RemoveEmptyEntries);
+
+        public static Dictionary<string, int> GetWordsOccurences(string text)
+        {
+            string[] words = GetWords(text).Select(word => word.ToLower()).ToArray();
+
+            var dictionary = new Dictionary<string, int>();
+
+            foreach (var word in words)
             {
-                PrintNumberOfWords(wordsCount);
-
-                var longestWords = GetLongestWords(wordsMatches);
-                var smallestWords = GetSmallestWords(wordsMatches);
-                var wordsOccurrences = GetWordsOccurrences(wordsMatches);
-
-                PrintSmallestWords(smallestWords);
-                PrintLongestWords(longestWords);
-                PrintWordsOccurrences(wordsOccurrences);
+                if (dictionary.ContainsKey(word))
+                {
+                    dictionary[word]++;
+                }
+                else
+                {
+                    dictionary.Add(word, 1);
+                }
             }
-            else
-            {
-                DisplayError(NoWordsError);
-            }
+
+            return dictionary
+                .OrderByDescending(x => x.Value)
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
-
-        private static IEnumerable<string> GetLongestWords(MatchCollection wordsMatches)
-        {
-            int maxLength = wordsMatches.Max(m => m.Value.Length);
-
-            return wordsMatches
-                .Where(m => m.Value.Length == maxLength)
-                .OrderBy(x => x.Value)
-                .Select(m => m.Value)
-                .Distinct();
-        }
-
-        private static IEnumerable<string> GetSmallestWords(MatchCollection wordsMatches)
-        {
-            int minLength = wordsMatches.Min(m => m.Value.Length);
-
-            return wordsMatches
-                .Where(m => m.Value.Length == minLength)
-                .OrderBy(x => x.Value)
-                .Select(m => m.Value)
-                .Distinct();
-        }
-
-        private static IOrderedEnumerable<KeyValuePair<string, int>> GetWordsOccurrences(MatchCollection wordsMatches)
-            => wordsMatches
-                .GroupBy(m => m.Value.ToLower())
-                .ToDictionary(g => g.Key, g => g.Count())
-                .OrderByDescending(x => x.Value);
     }
 }
