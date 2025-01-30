@@ -1,94 +1,121 @@
-﻿using System.Security.Cryptography;
-using static NumberGuessingGame.ConsoleReader;
-using static NumberGuessingGame.ConsolePrinter;
+﻿using NumberGuessingGame;
+using System.Security.Cryptography;
 
 const int MinBoundDifference = 100;
 
-Console.WriteLine("Welcome To The Number Guessing Game!");
-Console.WriteLine("You can choose the lower and upper bound yourself.");
-Console.WriteLine("The default lower and upper bounds are: 0 to 100 000.");
-PrintWarning($"The difference between the bounds must be at least {MinBoundDifference}.");
+ConsolePrinter.PrintHelloMessage(MinBoundDifference);
+
+int guessesCount = 0;
 
 int lowerBound = 0;
 int upperBound = 100_000;
-int guessesCount = 0;
 
-string userBoundsAnswer = GetUserBoundsChoice();
+Console.WriteLine("Would you like to choose the bounds yourself? Type 'yes' or 'no'.");
+
+string userBoundsAnswer = ConsoleReader.GetUserBoundsChoice();
+
+bool isUserBoundsAnswerValid = Validator.IsUserBoundsChoiceValid(userBoundsAnswer);
+while (isUserBoundsAnswerValid == false)
+{
+    ConsolePrinter.PrintError("Oops! Look's like you made a mistake with your spelling. Try, again.");
+    ConsolePrinter.PrintNewLine();
+    userBoundsAnswer = ConsoleReader.GetUserBoundsChoice();
+    isUserBoundsAnswerValid = Validator.IsUserBoundsChoiceValid(userBoundsAnswer);
+}
 
 if (userBoundsAnswer == "yes")
 {
     int maxLowerBoundValue = int.MaxValue - MinBoundDifference;
-    lowerBound = GetUserLowerBound(maxLowerBoundValue);
-    
+
+    Console.WriteLine("You will now choose the lower bound.");
+
+    string lowerBoundInput = ConsoleReader.GetUserLowerBound(maxLowerBoundValue);
+
+    bool isLowerBoundValid = Validator.IsLowerBoundValid(lowerBoundInput, maxLowerBoundValue);
+    while (isLowerBoundValid == false)
+    {
+        ConsolePrinter.PrintError("Oops! Look's like you chose an invalid value for your lower bound. Try, again.");
+        ConsolePrinter.PrintNewLine();
+        lowerBoundInput = ConsoleReader.GetUserLowerBound(maxLowerBoundValue);
+        isLowerBoundValid = Validator.IsLowerBoundValid(lowerBoundInput, maxLowerBoundValue);
+    }
+
+    lowerBound = int.Parse(lowerBoundInput);
+
     if (lowerBound == maxLowerBoundValue)
     {
         upperBound = int.MaxValue;
-        PrintWarning($"Since you chose {maxLowerBoundValue} for your lower bound value, the upper bound value is {int.MaxValue}");
+        ConsolePrinter.PrintWarning($"Since you chose {maxLowerBoundValue} for your lower bound value, the upper bound value is {int.MaxValue}");
     }
     else
     {
-        upperBound = GetUserUpperBound(lowerBound);
+        Console.WriteLine("You will now choose the upper bound.");
+        ConsolePrinter.PrintWarning($"Keep in mind that the difference between the bounds must be at least {MinBoundDifference}.");
+
+        string upperBoundInput = ConsoleReader.GetUserUpperBound(lowerBound);
+
+        bool isUpperBoundValid = Validator.IsUpperBoundValid(upperBoundInput, lowerBound);
+        while (isUpperBoundValid == false)
+        {
+            ConsolePrinter.PrintError("Oops! Look's like you chose an invalid value for your upper bound. Try, again.");
+            ConsolePrinter.PrintNewLine();
+            upperBoundInput = ConsoleReader.GetUserUpperBound(lowerBound);
+            isUpperBoundValid = Validator.IsUpperBoundValid(upperBoundInput, lowerBound);
+        }
+
+        upperBound = int.Parse(upperBoundInput);
+
+        if (upperBound < int.MaxValue)
+        {
+            upperBound += 1;
+        }
     }
 }
 
 int randomNumber = RandomNumberGenerator.GetInt32(lowerBound, upperBound);
 
-PrintSuccess("The random number has been generated! Let the game begin!");
+ConsolePrinter.PrintSuccess("The random number has been generated! Let the game begin!");
 Console.WriteLine("Anytime you want to stop the game just type 'end'.");
 
-bool isGameOver = false;
-bool hasGuessedIt = false;
-
-while (isGameOver == false)
+bool hasUserGuessedIt = false;
+while (hasUserGuessedIt == false)
 {
-    Console.Write("Your guess: ");
-
-    string userGuessInput = Console.ReadLine() ?? string.Empty;
+    string userGuessInput = ConsoleReader.GetUserNumberGuess();
 
     if (userGuessInput == "end")
     {
         break;
     }
 
-    bool isUserGuessValid = int.TryParse(userGuessInput, out int userGuess) &&
-        userGuess >= lowerBound &&
-        userGuess <= upperBound;
-
+    bool isUserGuessValid = Validator.IsUserGuessValid(userGuessInput, lowerBound, upperBound);
     while (isUserGuessValid == false)
     {
-        PrintError($"You must enter a valid number between {lowerBound} and {upperBound}. That guess will not count. Try, again.");
-        Console.Write("Your guess: ");
-        userGuessInput = Console.ReadLine() ?? string.Empty;
-        isUserGuessValid = int.TryParse(userGuessInput, out userGuess) &&
-            userGuess >= lowerBound &&
-            userGuess <= upperBound;
+        ConsolePrinter.PrintError($"You must enter a valid number between {lowerBound} and {upperBound}. That guess will not count. Try, again.");
+        userGuessInput = ConsoleReader.GetUserNumberGuess();
+        isUserGuessValid = Validator.IsUserGuessValid(userGuessInput, lowerBound, upperBound);
     }
 
     guessesCount++;
 
+    int userGuess = int.Parse(userGuessInput);
+
     if (userGuess == randomNumber)
     {
-        isGameOver = true;
-        hasGuessedIt = true;
-        continue;
+        hasUserGuessedIt = true;
+        break;
     }
-    else if (userGuess < randomNumber)
-    {
-        PrintError("Noo, look's like a hit and a miss!");
-        PrintWarning("You will have to go higher than that.");
-    }
-    else
-    {
-        PrintError("Noo, look's like a hit and a miss!");
-        PrintWarning("You will have to go lower than that.");
-    }
+
+    ConsolePrinter.PrintError("Noo, look's like a hit and a miss!");
+    ConsolePrinter.PrintWarning(userGuess < randomNumber ?
+        "You will have to go higher than that." :
+        "You will have to go lower than that.");
 }
 
-if (hasGuessedIt)
+if (hasUserGuessedIt)
 {
-    PrintEndGameSuccessMessage(guessesCount);
+    ConsolePrinter.PrintEndGameSuccessMessage(guessesCount);
 }
 else
 {
-    PrintQuitMessage(guessesCount, randomNumber);
+    ConsolePrinter.PrintQuitMessage(guessesCount, randomNumber);
 }

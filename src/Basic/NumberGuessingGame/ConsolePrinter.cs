@@ -23,12 +23,22 @@
             Console.ResetColor();
         }
 
+        public static void PrintHelloMessage(int minBoundDifference)
+        {
+            Console.WriteLine("Welcome To The Number Guessing Game!");
+            Console.WriteLine("You can choose the lower and upper bound yourself.");
+            Console.WriteLine("The default lower and upper bounds are: 0 to 100 000.");
+            PrintWarning($"The difference between the bounds must be at least {minBoundDifference}.");
+        }
+
         public static void PrintQuitMessage(int guessesCount, int randomNumber)
         {
             Console.WriteLine(new string('-', 50));
             Console.WriteLine($"We got a quitter here, huh? You quit after {guessesCount} tries.");
             Console.WriteLine($"The generated number was: {randomNumber}.");
         }
+
+        public static void PrintNewLine() => Console.Write(Environment.NewLine);
 
         public static void PrintEndGameSuccessMessage(int guessesCount)
         {
