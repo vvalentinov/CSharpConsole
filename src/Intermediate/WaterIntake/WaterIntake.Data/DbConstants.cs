@@ -1,4 +1,4 @@
-﻿namespace WaterIntake
+﻿namespace WaterIntake.Data
 {
     public static class DbConstants
     {

@@ -1,6 +1,6 @@
-﻿namespace WaterIntake
+﻿namespace WaterIntake.Data
 {
-    public class WaterIntakeTableRecord
+    public class TableRecord
     {
         public int Id { get; set; }
 
@@ -9,6 +9,6 @@
         public decimal Litres { get; set; }
 
         public override string ToString()
-            => $"Id: {Id}, Date: {Date:dd-MMM-yyyy}, Litres: {Litres}";
+            => $"Id: {Id}, Date: {Date.ToString(DbConstants.TableDateColumnFormat)}, Litres: {Litres}";
     }
 }
